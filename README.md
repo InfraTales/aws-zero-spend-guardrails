@@ -10,6 +10,10 @@ A new AWS account gets the Free plan or the Paid plan, up to $200 in credits, an
 
 It also has `npm run free-tier-report`, a read-only script that prints this month's Free Tier usage against each limit and flags anything at 80% or more.
 
+## Architecture
+
+![Budgets and Cost Anomaly Detection alert through SNS; a budget action attaches a deny policy](docs/architecture.png)
+
 ## What it costs
 
 Nothing, inside the free allowances. AWS Budgets is free for monitoring, and the first two budgets with actions are free each month. This stack has one. Cost Anomaly Detection has no charge. SNS sends the first 1,000 emails each month for free, far more than these alerts need. [docs/cost.md](docs/cost.md) has the sources and the one choice that would cost money (a KMS key for the topic).
