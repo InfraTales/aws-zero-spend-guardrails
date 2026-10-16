@@ -71,9 +71,9 @@ It calls `GetAccountPlanState` and `GetFreeTierUsage` and nothing else. The call
 
 ## What the budget action does and doesn't do
 
-Once actual spend reaches the limit, AWS Budgets attaches the `ZeroSpendGuardrails-spend-freeze` policy to the roles and groups you named. The policy denies the API calls that start hourly or per-call charges: launching or starting EC2 instances, creating NAT gateways, Elastic IPs, interface endpoints and load balancers, creating or starting RDS databases, ECS and EKS work, SageMaker endpoints, and Bedrock model calls.
+Once actual spend reaches the limit, AWS Budgets attaches the `ZeroSpendGuardrails-spend-freeze` policy to the roles and groups you named. The policy denies the API calls that start hourly or per-call charges: launching or starting EC2 instances, creating NAT gateways, Elastic IPs, interface endpoints and load balancers, creating or starting RDS databases, ECS and EKS work, SageMaker endpoints, and Bedrock model calls. It also denies assuming the CDK bootstrap roles (`cdk-*`) and passing any role with `iam:PassRole`, so a frozen role can't get around it with `cdk deploy` or by handing a role to CloudFormation.
 
-It doesn't stop anything that's already running. A NAT gateway created before the freeze keeps billing until you delete it. It also doesn't apply to the root user, which is one more reason to work in a role. [docs/runbook.md](docs/runbook.md) says what to do when the freeze fires and how to lift it.
+It doesn't stop anything that's already running. A NAT gateway created before the freeze keeps billing until you delete it. It also doesn't apply to the root user, which is one more reason to work in a role. And it only covers the roles and groups you name: if your role can assume some other role that isn't named, that role can still create resources, so name it too. [docs/runbook.md](docs/runbook.md) says what to do when the freeze fires and how to lift it.
 
 ## Tests
 
