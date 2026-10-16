@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Wait a week before proposing a new release, so a bad publish has time to be pulled.
+    cooldown:
+      default-days: 7
+    ignore:
+      # CI and the report script run on Node.js 24. Types for a newer Node would let code use
+      # APIs that don't exist there. Move this with the runtime.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+    groups:
+      aws-sdk:
+        patterns: ['@aws-sdk/*']
+      cdk:
+        patterns: ['aws-cdk', 'aws-cdk-lib', 'constructs', 'cdk-nag']
+      dev-tools:
+        dependency-type: development
+        exclude-patterns: ['aws-cdk']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7

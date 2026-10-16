@@ -1,0 +1,40 @@
+{
+  "name": "aws-zero-spend-guardrails",
+  "version": "1.0.0",
+  "description": "Guardrails that keep a new AWS account at $0: AWS Budgets, a budget action with a deny policy, Cost Anomaly Detection and an SNS topic. AWS CDK, TypeScript.",
+  "private": true,
+  "license": "MIT-0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "jest",
+    "synth": "cdk synth --quiet -c alertEmail=you@example.com -c restrictRoles=Developer",
+    "check": "npm run build && npm run lint && npm test && npm run synth",
+    "free-tier-report": "ts-node scripts/free-tier-report.ts",
+    "deploy": "cdk deploy",
+    "destroy": "cdk destroy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-freetier": "^3.1152.0",
+    "aws-cdk-lib": "^2.273.0",
+    "cdk-nag": "^3.0.2",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.19.2",
+    "aws-cdk": "^2.1145.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-jest": "^4.1.0",
+    "eslint": "^10.12.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
