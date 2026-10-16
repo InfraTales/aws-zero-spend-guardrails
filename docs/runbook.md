@@ -14,11 +14,11 @@ Open the `anomalyDetailsLink` in the message. It shows the service, Region and u
 
 ## The freeze fired
 
-AWS Budgets attached `ZeroSpendGuardrails-spend-freeze` to your role or group. You'll see `AccessDenied` on launches and model calls.
+AWS Budgets attached `ZeroSpendGuardrails-spend-freeze` to your role or group. You'll see `AccessDenied` on launches and model calls, and `cdk deploy` fails too, because the role can no longer assume the CDK bootstrap roles or pass a role.
 
 1. Find what's running and delete what you don't need. The freeze stops new resources, not running ones.
 2. Once you're ready to work again, open AWS Budgets, choose the monthly budget, find the action in **Action history**, and reverse it. AWS Budgets then stops evaluating it for the rest of the month. Choose **Reset** if you want it watching again in the same month.
-3. If the limit is too low for what you're building, raise `monthlyLimitUsd` and redeploy.
+3. If the limit is too low for what you're building, raise `monthlyLimitUsd` and redeploy. Reverse the action first, or the deploy fails.
 
 ## No alerts ever arrive
 

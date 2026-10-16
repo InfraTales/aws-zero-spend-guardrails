@@ -158,6 +158,23 @@ export class ZeroSpendGuardrailsStack extends cdk.Stack {
         ...Object.entries(DENY_STATEMENTS).map(
           ([sid, actions]) => new iam.PolicyStatement({ sid, effect: iam.Effect.DENY, actions: [...actions], resources: ['*'] }),
         ),
+        // A frozen role could otherwise hand the work to a role the freeze doesn't cover.
+        // `cdk deploy` does exactly that: it assumes the CDK bootstrap roles, and
+        // CloudFormation then creates resources as the cfn-exec role.
+        new iam.PolicyStatement({
+          sid: 'DenyAssumingCdkBootstrapRoles',
+          effect: iam.Effect.DENY,
+          actions: ['sts:AssumeRole'],
+          resources: [`arn:${this.partition}:iam::*:role/cdk-*`],
+        }),
+        // Passing a role is how a caller gives CloudFormation, Lambda, ECS and others a role
+        // to act as, so the frozen role can't pass any.
+        new iam.PolicyStatement({
+          sid: 'DenyPassingRoles',
+          effect: iam.Effect.DENY,
+          actions: ['iam:PassRole'],
+          resources: ['*'],
+        }),
         // Without these, the restricted role could detach the freeze and carry on. Reversing
         // it goes through AWS Budgets instead, where the action history records it.
         new iam.PolicyStatement({

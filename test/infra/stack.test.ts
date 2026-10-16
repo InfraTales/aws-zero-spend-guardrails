@@ -236,6 +236,18 @@ describe('deny policy', () => {
         Resource: '*',
       },
       {
+        Sid: 'DenyAssumingCdkBootstrapRoles',
+        Effect: 'Deny',
+        Action: 'sts:AssumeRole',
+        Resource: 'arn:aws:iam::*:role/cdk-*',
+      },
+      {
+        Sid: 'DenyPassingRoles',
+        Effect: 'Deny',
+        Action: 'iam:PassRole',
+        Resource: '*',
+      },
+      {
         Sid: 'DenyDetachingThisPolicy',
         Effect: 'Deny',
         Action: ['iam:DetachGroupPolicy', 'iam:DetachRolePolicy'],
@@ -249,6 +261,16 @@ describe('deny policy', () => {
         Resource: denyPolicyArn,
       },
     ]);
+  });
+
+  test('blocks the routes around the freeze: CDK bootstrap roles and passing a role', () => {
+    const stmts = policy.Properties.PolicyDocument.Statement;
+    const bySid = (sid: string) => stmts.find((s: any) => s.Sid === sid);
+    // cdk deploy assumes cdk-<qualifier>-deploy-role-* and passes cdk-<qualifier>-cfn-exec-role-*.
+    expect(bySid('DenyAssumingCdkBootstrapRoles')).toMatchObject({ Effect: 'Deny', Action: 'sts:AssumeRole' });
+    expect(bySid('DenyAssumingCdkBootstrapRoles').Resource).toBe('arn:aws:iam::*:role/cdk-*');
+    expect(bySid('DenyAssumingCdkBootstrapRoles').Condition).toBeUndefined();
+    expect(bySid('DenyPassingRoles')).toEqual({ Sid: 'DenyPassingRoles', Effect: 'Deny', Action: 'iam:PassRole', Resource: '*' });
   });
 
   test('allows nothing', () => {
