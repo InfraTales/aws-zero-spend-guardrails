@@ -18,7 +18,7 @@
     "destroy": "cdk destroy"
   },
   "dependencies": {
-    "@aws-sdk/client-freetier": "^3.1152.0",
+    "@aws-sdk/client-freetier": "^3.1156.0",
     "aws-cdk-lib": "^2.273.0",
     "cdk-nag": "^3.0.2",
     "constructs": "^10.8.1"
